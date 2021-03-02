@@ -5,8 +5,8 @@ pipelines:
         script:
           - pipe: atlassian/sftp-deploy:0.5.7
             variables:
-              USER: chetan
-              SERVER: '65.0.114.37'
+              USER: test
+              SERVER: '192.168.1.1'
               REMOTE_PATH: '/var/www/html/'
               LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/*' 
-              PASSWORD: Apple@3346
+              PASSWORD: 123456
