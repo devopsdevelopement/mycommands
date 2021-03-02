@@ -1,0 +1,12 @@
+pipelines:
+  default:
+    - step:
+        name: SFTP Deploy
+        script:
+          - pipe: atlassian/sftp-deploy:0.5.7
+            variables:
+              USER: test
+              SERVER: '192.168.1.2'
+              REMOTE_PATH: '/var/www/html/mygit'
+              LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/*' 
+              PASSWORD: 1234
