@@ -1,0 +1,64 @@
+Hosting sites on the Cloud server gives much flexibility compared to shared hosting. You can install whatever you like, scale up or down, and configure for better performance and cost-optimization.
+
+If you are running multiple business sites but don’t want to host them separately, you can take advantage of Virtual Server in web servers. Let’s take a look at this scenario.
+
+I have the following two sites which I would like to point to my one cloud VM.
+
+lab.geekflare.com
+gf.dev
+Before implementation, let’s understand how it works.
+
+The concept to have multiple websites on a single web server instance is called Virtual Server. It is defined in the configuration file along with the URL. When a request is made to a defined URL, the webserver would serve the traffic from the respective Document Root.
+
+Configure Virtual Host in Apache to host multiple domains
+Login into Apache HTTP Server
+Go to the apache conf location. ( in default installation – you will find it here /etc/httpd/conf/httpd.conf)
+Take a backup of httpd.conf file
+Create a VirtualHost container like below I have done for two domains.
+<VirtualHost *:80>
+ServerAdmin mail@example.com
+   DocumentRoot /opt/htdocs/lab
+   ServerName lab.geekflare.com
+   ErrorLog logs/lab.geekflare.com-error_log
+   CustomLog logs/lab.geekflare.com-access_log common
+</VirtualHost>
+
+<VirtualHost *:80>
+   ServerAdmin mail@xyz.com
+   DocumentRoot /opt/htdocs/gf-dev
+   ServerName gf.dev
+   ErrorLog logs/gf.dev-error_log
+   CustomLog logs/gf.dev-access_log common
+</VirtualHost>
+Note: Change the value for ServerAdmin, DocumentRoot, ServerName, ErrorLog, CustomLog based on your requirement.
+
+Restart Apache HTTP and test both URLs.
+Configure Virtual Host in Nginx to host multiple domains
+Login to Nginx server
+Go to the location where you’ve installed Nginx. (in default location – you will find it here /etc/nginx/)
+There are multiple ways to achieve this. Either you can modify nginx.conf file or custom file if you have any. You may also create a custom.conf under conf.d folder. Choose what works for you and take a backup if modifying an existing file.
+
+Create a server block for both URL’s as I have shown below.
+server {
+listen 80;
+   root /opt/htdocs/lab;
+index index.html index.htm;
+   server_name lab.geekflare.com;
+   location / {
+       try_files $uri $uri/ =404;
+   }
+}
+
+server {
+   listen 80;
+   root /opt/htdocs/gf-dev;
+   index index.html index.htm;
+   server_name gf.dev;
+   location / {
+       try_files $uri $uri/ =404;
+   }
+}
+Note: Change the value for root, server_name based on your requirement.
+
+Restart Nginx and test both URL’s
+Don’t forget to update the DNS record of your URL to map to server IP. Once done, you should be able to access the URLs which are getting served through the above configuration you made.
