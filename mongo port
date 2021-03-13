@@ -1,0 +1,24 @@
+Plan A: Change the port in /etc/mongodb.config (recommended)
+You can specify mongod’s listening port by setting it in the mongodb configuration file.
+Open /etc/mongod.conf with your favorite code editor and search for the following lines:
+net:
+  port: 27017
+If you can’t find mongod.conf or it is named mongodb.conf instead, it means that you are using a really old and broken version of MongoDB. Please read this guide on how to upgrade to a more recent version.)
+Now change the port number to any other of your choice, save and reload mongod:
+$ sudo service mongodb restart
+[ ok ] Restarting database: mongod.
+Please take into account that the chosen port needs to be equal or greater than 1000 and must not be taken by any other service running in the same host. You can check if a certain port is already in use with the nc command:
+$ nc -l 3000
+nc: Address already in use
+$ nc -l 23456
+Listening on [0.0.0.0] (family 0, port 23456)
+^C
+Plan B: Pass the --port argument when you start mongod
+Under some circunstancies you may want to run mongod directly from console instead of as a demon or service. In these cases, there is an argument you can add to your mongod start command in order to specify the listening port:
+$ mongod --port 23456
+Wed Jan 25 18:52:09 [initandlisten] MongoDB starting : pid=26004 port=23456 dbpath=/data/db/ 64-bit host=localhost
+As said in Plan A, the chosen port needs to be equal or greater than 1000 and must not be taken by any other service running in the same host. You can check if a certain port is already in use with the nc command:
+$ nc -l 3000
+nc: Address already in use
+$ nc -l 23456
+Listening on [0.0.0.0] (family 0, port 23456)
